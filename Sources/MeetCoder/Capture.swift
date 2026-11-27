@@ -3,8 +3,14 @@ import CoreImage
 import ScreenCaptureKit
 import Vision
 
+/// The live frame, kept apart from `CaptureEngine` so only the preview image redraws at the
+/// capture rate; views that watch the engine (top bar, card chrome) stay still.
+final class PreviewFeed: ObservableObject {
+    @Published var image: CGImage?
+}
+
 final class CaptureEngine: NSObject, ObservableObject, SCStreamOutput, SCStreamDelegate {
-    @Published var preview: CGImage?
+    let feed = PreviewFeed()
     @Published var windows: [SCWindow] = []
     @Published var active = false
     @Published var error: String?
@@ -76,6 +82,7 @@ final class CaptureEngine: NSObject, ObservableObject, SCStreamOutput, SCStreamD
         if let s = stream { try? await s.stopCapture() }
         stream = nil
         active = false
+        feed.image = nil
     }
 
     func snapshot() -> CGImage? {
@@ -90,7 +97,7 @@ final class CaptureEngine: NSObject, ObservableObject, SCStreamOutput, SCStreamD
         let img = CIImage(cvPixelBuffer: pb)
         guard let cg = ci.createCGImage(img, from: img.extent) else { return }
         lock.lock(); latest = cg; lock.unlock()
-        DispatchQueue.main.async { self.preview = cg }
+        DispatchQueue.main.async { self.feed.image = cg }
     }
 
     func stream(_ stream: SCStream, didStopWithError error: Error) {

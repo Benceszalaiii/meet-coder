@@ -60,8 +60,7 @@ final class DevServer: ObservableObject {
                     let line = DevServer.ansi.stringByReplacingMatches(in: raw, range: NSRange(location: 0, length: ns.length), withTemplate: "")
                     DispatchQueue.main.async {
                         guard let self, self.projectPath == path else { return }
-                        self.lines.append(label + line)
-                        if self.lines.count > 400 { self.lines.removeFirst(self.lines.count - 400) }
+                        self.enqueue(label + line)
                         guard !line.hasPrefix("[vite]"), self.url == nil || svc.kind == "next" || svc.kind == "laravel" else { return }
                         let r = NSRange(location: 0, length: (line as NSString).length)
                         if let m = DevServer.urlRegex.firstMatch(in: line, range: r), self.url == nil || line.contains("Server running") || line.contains("Local") {
@@ -72,6 +71,7 @@ final class DevServer: ObservableObject {
                 }
                 await MainActor.run { [weak self] in
                     guard let self, self.projectPath == path else { return }
+                    self.flush()
                     self.lines.append(label + "— leállt (kód: \(code))")
                     if !self.procs.contains(where: { $0.isRunning }) { self.running = false; self.status = "Leállt" }
                 }
@@ -79,7 +79,27 @@ final class DevServer: ObservableObject {
         }
     }
 
+    /// Dev servers print in bursts; publish them as one change every 50 ms, not one per line.
+    private var pending: [String] = []
+    private var flushScheduled = false
+
+    private func enqueue(_ line: String) {
+        pending.append(line)
+        guard !flushScheduled else { return }
+        flushScheduled = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [weak self] in self?.flush() }
+    }
+
+    private func flush() {
+        flushScheduled = false
+        guard !pending.isEmpty else { return }
+        lines.append(contentsOf: pending)
+        pending = []
+        if lines.count > 400 { lines.removeFirst(lines.count - 400) }
+    }
+
     func stop() {
+        pending = []
         procs.forEach { $0.terminate() }
         procs = []
         projectPath = nil
