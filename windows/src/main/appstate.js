@@ -4,8 +4,7 @@ const path = require('path');
 const crypto = require('crypto');
 const EventEmitter = require('events');
 const { Paths, Settings, stackLabel, hasCSharp, folded, tail, head } = require('./models');
-const Claude = require('./claude');
-const Shell = require('./shell');
+const { ModelRouter } = require('./model-router');
 const Frames = require('./frames');
 const Ocr = require('./ocr');
 const { StreamProc } = require('./shell');
@@ -46,6 +45,7 @@ class AppState extends EventEmitter {
     super();
     this.host = host;
     this.settings = Settings.load();
+    this.models = new ModelRouter(() => this.touch());
     this.running = false;
     this.presenter = null;
     this.projects = [];
@@ -81,6 +81,7 @@ class AppState extends EventEmitter {
     this.frameIndex = 0;
     this.taskIndex = 0;
     this.agentProc = new StreamProc();
+    this.agentAbort = null;
     this.grabAttempted = new Set();
     this.rootNotesThisSession = false;
   }
@@ -98,7 +99,7 @@ class AppState extends EventEmitter {
       case NOTES: return { notes: this.notes, notesFile: this.notesFile };
       case CHANGES: return this.changes;
       default: return {
-        settings: this.settings, running: this.running, presenter: this.presenter, projects: this.projects,
+        settings: this.settings, models: this.models.snapshot(this.settings.model), running: this.running, presenter: this.presenter, projects: this.projects,
         current: this.current, teacherArea: this.teacherArea, agent: this.agent, feed: this.feed.slice(0, 1),
         cost: this.cost, framesKept: this.framesKept, framesAnalysed: this.framesAnalysed, analysing: this.analysing,
         grabbing: this.grabbing, hint: this.hint, selectedWindowID: this.selectedWindowID, lastKeptAt: this.lastKeptAt,
@@ -190,6 +191,7 @@ class AppState extends EventEmitter {
   }
 
   async start() {
+    this.models.refresh();
     this.bootstrap();
     await this.refreshWindows();
     const window = this.capture.windows.find(w => w.id === this.selectedWindowID) || this.bestWindow();
@@ -215,13 +217,12 @@ class AppState extends EventEmitter {
     clearInterval(this.timer); this.timer = null;
     this.running = false;
     await this.captureStop();
-    this.agentProc.terminate();
-    this.queued = null;
+    this.stopAgent();
     this.log('stop.fill', 'Figyelés leállítva');
   }
 
   shutdown() {
-    this.agentProc.terminate();
+    this.stopAgent();
     this.dev.stop();
     Ocr.shutdown();
   }
@@ -301,7 +302,9 @@ ${tail(this.notes, 1500)}
 SCREENSHOT FILE: ${f.path}
 SCREEN OCR TEXT:
 ${head(f.text, 7000)}`;
-    const r = await Claude.ask({ system: analystSystem, prompt, schema: analystSchema, readDirs: [Paths.frames] });
+    const r = await this.models.run('ask', this.settings.model, {
+      system: analystSystem, prompt, schema: analystSchema, image: f.path, readDirs: [Paths.frames],
+    });
     this.cost += r.cost;
     this.framesAnalysed += 1;
     this.analysing = false;
@@ -410,6 +413,7 @@ ${head(f.text, 7000)}`;
   async runAgent(task) {
     const p = this.current;
     if (!p || this.capped) return;
+    this.agentAbort = new AbortController();
     this.agent = { active: true, title: task.title, step: 'Projekt feltérképezése…', area: '', files: [], startedAt: Date.now() };
     this.log('hammer.fill', `Kódolás: ${task.title}`);
     await Shadow.prepare(p);
@@ -422,8 +426,9 @@ ${task.framePath ? `TEACHER SCREENSHOT (Read only if needed): ${task.framePath}`
 TEACHER SCREEN OCR TEXT:
 ${head(task.ocr, 7000)}`;
     const root = p.path;
-    const r = await Claude.agent({
+    const r = await this.models.run('agent', this.settings.model, {
       proc: this.agentProc, cwd: p.path, prompt, system, allowCommands: !hasCSharp(p),
+      image: task.framePath, signal: this.agentAbort.signal,
       readDirs: [Paths.frames], budget: Math.min(1.5, this.settings.costCap - this.cost),
       onEvent: ev => this.handleAgentEvent(ev, root),
     });
@@ -452,6 +457,7 @@ ${head(task.ocr, 7000)}`;
       this.log('checkmark.circle', `Nem kellett módosítani: ${task.title}`);
     }
     this.agent.active = false;
+    this.agentAbort = null;
     this.agent.step = 'Tétlen';
     this.touch();
     if (this.capped) this.log('pause.circle.fill', 'Elérted a költségkeretet — a kódolás szünetel.');
@@ -492,7 +498,12 @@ ${head(task.ocr, 7000)}`;
     this.touch();
   }
 
-  stopAgent() { this.agentProc.terminate(); this.queued = null; this.touch(); }
+  stopAgent() {
+    this.agentAbort?.abort();
+    this.agentProc.terminate();
+    this.queued = null;
+    this.touch();
+  }
 
   async undo(id) {
     const entry = this.changes.find(c => c.id === id);
@@ -550,7 +561,7 @@ ${head(task.ocr, 7000)}`;
     const m = this.matchTeacherFolder(top);
     if (m) teacherDirs = [m];
     else if (tp) {
-      const r = await Claude.ask({
+      const r = await this.models.run('ask', this.settings.model, {
         system: 'Pick the folder on a school network share that belongs to the given teacher. Folders may be full names, surnames or nicknames. Answer null when none plausibly matches.',
         prompt: `TEACHER: ${tp}\nFOLDERS:\n${top.join('\n')}`,
         schema: '{"type":"object","properties":{"folder":{"type":["string","null"]}},"required":["folder"]}',
@@ -594,7 +605,7 @@ ${head(task.ocr, 7000)}`;
     if (candidates.length > 1) {
       const listing = candidates.slice(0, 120)
         .map(c => `${c.rel}  (modified ${new Date(c.mtime).toISOString().replace(/\.\d{3}Z$/, 'Z')})`).join('\n');
-      const r = await Claude.ask({
+      const r = await this.models.run('ask', this.settings.model, {
         system: "Choose which folder on the teacher's share holds the project files for the class happening right now. Prefer a name matching the hint, otherwise the most recently modified plausible project folder. Answer with a path exactly as listed.",
         prompt: `TEACHER: ${tp || 'unknown'}\nPROJECT HINT FROM SCREEN: ${th || 'none'}\nCURRENT AREA: ${tArea}\nNOTES: ${notesTail}\n\nCANDIDATE FOLDERS:\n${listing}`,
         schema: '{"type":"object","properties":{"path":{"type":"string"}},"required":["path"]}',

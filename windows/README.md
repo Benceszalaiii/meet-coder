@@ -1,14 +1,27 @@
 # MeetCoder for Windows
 
-The Windows version of MeetCoder — same interface (Hungarian), same behaviour, same single-model setup
-(Sonnet 5.5 at medium effort through the locally installed Claude Code). The macOS original lives in `../Sources/MeetCoder`.
+MeetCoder for Windows uses Electron and a Hungarian interface. The native macOS version lives in `../Sources/MeetCoder`. Both apps offer the same model choices.
 
 ## Requirements
 
 - Windows 10 (1903+) or 11
-- [Claude Code](https://claude.com/claude-code) installed and signed in (`claude` must work in a terminal)
+- At least one model CLI available on your PATH
 - [Git for Windows](https://git-scm.com/download/win) — used for the private change history (per-change undo)
 - Whatever your class projects need: Node.js/npm, PHP + Composer (Laravel)
+
+## Model selection on Windows and macOS
+
+Open **Beállítások → Modell** to choose a model. **Automatikus** tries Claude Sonnet first, then the default model reported by Codex, then OpenCode. A saved choice that becomes unavailable falls back to OpenCode. Refresh the list after installing a CLI, changing accounts or restoring access.
+
+| Provider | Setup |
+| --- | --- |
+| Claude | Install Claude Code and use `claude auth login` with your Claude subscription. The picker offers Sonnet, Opus and Haiku. |
+| Codex | Install the Codex CLI and use `codex login` with your ChatGPT subscription. The picker lists models from the signed-in CLI. |
+| OpenCode | Install the OpenCode CLI and configure its default model. Confirm that `opencode run` works in a terminal. MeetCoder uses that model and its provider's billing settings. |
+
+Codex can inspect and edit project files with shell execution disabled. Claude and image-capable Codex models can use screenshots. OpenCode receives the recognized screen text so its configured default can be a text-only model.
+
+The cost display uses amounts reported by the CLI. Codex subscription usage counts toward your plan limits and does not supply a dollar amount. A coding run that loses access may have already edited files, so MeetCoder uses the fallback for subsequent work.
 
 ## Run / build
 

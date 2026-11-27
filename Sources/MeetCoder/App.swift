@@ -13,6 +13,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 }
 
 @main
+enum MeetCoderMain {
+    @MainActor static func main() {
+        let args = CommandLine.arguments
+        if args.count == 3, args[1] == "--project-reader" {
+            ProjectReader.serve(root: args[2])
+        } else {
+            Typeface.register()
+            MeetCoderApp.main()
+        }
+    }
+}
+
 struct MeetCoderApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var delegate
     @StateObject private var state = AppState.shared

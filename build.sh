@@ -6,6 +6,10 @@ swift build -c release 2>&1 | tail -40
 APP="MeetCoder.app"
 mkdir -p "$APP/Contents/MacOS"
 cp .build/release/MeetCoder "$APP/Contents/MacOS/MeetCoder"
+mkdir -p "$APP/Contents/Resources"
+rm -rf "$APP/Contents/Resources/Fonts"
+cp -R Sources/MeetCoder/Fonts "$APP/Contents/Resources/Fonts"
+cp assets/AppIcon.icns "$APP/Contents/Resources/AppIcon.icns"
 cat > "$APP/Contents/Info.plist" <<'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -15,6 +19,7 @@ cat > "$APP/Contents/Info.plist" <<'EOF'
   <key>CFBundleDisplayName</key><string>MeetCoder</string>
   <key>CFBundleIdentifier</key><string>local.meetcoder.app</string>
   <key>CFBundleExecutable</key><string>MeetCoder</string>
+  <key>CFBundleIconFile</key><string>AppIcon</string>
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>CFBundleShortVersionString</key><string>1.0</string>
   <key>CFBundleVersion</key><string>1</string>

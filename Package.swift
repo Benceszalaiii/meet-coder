@@ -5,6 +5,7 @@ let package = Package(
     name: "MeetCoder",
     platforms: [.macOS(.v14)],
     targets: [
-        .executableTarget(name: "MeetCoder", path: "Sources/MeetCoder")
+        .executableTarget(name: "MeetCoder", path: "Sources/MeetCoder", resources: [.copy("Fonts")]),
+        .testTarget(name: "MeetCoderTests", dependencies: ["MeetCoder"])
     ]
 )

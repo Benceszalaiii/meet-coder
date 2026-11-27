@@ -26,11 +26,11 @@ function Icon({ name, size = 12, style, className = '' }) {
   );
 }
 
-function Card({ title, icon, tint = 'var(--dim)', trailing, children, style, className = '' }) {
+function Card({ title, icon, trailing, children, style, className = '' }) {
   return (
     <div class={'card ' + className} style={style}>
       <div class="card-head">
-        <Icon name={icon} size={11} style={{ color: tint }} />
+        <Icon name={icon} size={13} />
         <span class="card-title">{title}</span>
         <span class="card-spacer" />
         {trailing}
@@ -40,23 +40,23 @@ function Card({ title, icon, tint = 'var(--dim)', trailing, children, style, cla
   );
 }
 
-function Chip({ icon, text, tint = '#fff' }) {
+function Chip({ icon, text, kind = '' }) {
   return (
-    <span class="chip">
-      <Icon name={icon} size={10.5} style={{ color: tint }} />
+    <span class={'chip ' + kind}>
+      <Icon name={icon} size={12} />
       <span>{text}</span>
     </span>
   );
 }
 
-function PulseDot({ color, active }) {
-  return <span class={'pulse' + (active ? ' active' : '')} style={{ background: color, '--c': color }} />;
+function PulseDot({ active }) {
+  return <span class={'pulse' + (active ? ' active' : '')} />;
 }
 
 function Spinner({ size = 'small' }) { return <span class={'spinner ' + size} />; }
 
 function IconButton({ icon, help, onClick }) {
-  return <button class="icon-btn" title={help} onClick={onClick}><Icon name={icon} size={12} /></button>;
+  return <button class="icon-btn" title={help} aria-label={help} onClick={onClick}><Icon name={icon} size={13} /></button>;
 }
 
 function Menu({ label, items }) {
@@ -125,7 +125,7 @@ function Dashboard({ st }) {
     first.current = false;
   }, [compact]);
   return (
-    <div class={'dash' + (compact ? ' compact' : '')}>
+    <div class={'dash hue-royal' + (compact ? ' compact' : '')}>
       <TopBar st={st} compact={compact} setCompact={setCompact} openSettings={() => setShowSettings(true)} />
       {compact ? (
         <div class="compact-stack">
@@ -136,7 +136,7 @@ function Dashboard({ st }) {
         <div class="main">
           <div class="col col1">
             <StreamCard st={st} className="fill" style={{ minHeight: '250px' }} />
-            <NowCodingCard st={st} style={{ height: '250px', flex: 'none' }} />
+            <NowCodingCard st={st} style={{ flex: 'none' }} />
           </div>
           <div class="col col2">
             <ChangeLogCard st={st} className="fill" />
@@ -147,7 +147,7 @@ function Dashboard({ st }) {
           </div>
         </div>
       )}
-      <StatusBar st={st} />
+      <StatusBar st={st} openSettings={() => setShowSettings(true)} />
       {showSettings && <SettingsSheet st={st} close={() => setShowSettings(false)} />}
     </div>
   );
@@ -158,13 +158,10 @@ function TopBar({ st, compact, setCompact, openSettings }) {
   const cap = c.capture;
   return (
     <div class="topbar">
-      <div class="brand">
-        <Icon name="sparkles.rectangle.stack.fill" size={13} style={{ color: 'var(--accent)' }} />
-        <span>MeetCoder</span>
-      </div>
-      <button class={'pill-btn start-btn' + (c.running ? ' running' : '')} onClick={() => act(c.running ? 'stop' : 'start')}>
-        <Icon name={c.running ? 'stop.fill' : 'play.fill'} size={10} />
+      <span class="wordmark">MeetCoder</span>
+      <button class={'pill' + (c.running ? ' running' : '')} onClick={() => act(c.running ? 'stop' : 'start')}>
         <span>{c.running ? 'Leállítás' : 'Indítás'}</span>
+        <span class="pill-chip"><Icon name={c.running ? 'stop.fill' : 'play.fill'} size={10} /></span>
       </button>
 
       {!compact && (
@@ -176,12 +173,12 @@ function TopBar({ st, compact, setCompact, openSettings }) {
               { divider: true },
               { label: 'Ablaklista frissítése', onClick: () => act('refreshWindows') },
             ]} />
-          <Chip icon="person.fill" text={c.presenter || 'Nincs megosztó'} tint={c.presenter ? 'var(--ai)' : 'var(--dim)'} />
+          <Chip icon="person.fill" text={c.presenter || 'Nincs megosztó'} kind={c.presenter ? 'known' : 'open-q'} />
         </>
       )}
 
       <Menu
-        label={<Chip icon="folder.fill" text={c.current ? c.current.name : 'Projekt: még nem dőlt el'} tint={c.current ? 'var(--accent)' : 'var(--warn)'} />}
+        label={<Chip icon={c.current ? 'folder.fill' : 'questionmark.folder'} text={c.current ? c.current.name : 'Projekt: még nem dőlt el'} kind={c.current ? 'known' : 'open-q'} />}
         items={[
           ...c.projects.map(p => ({ label: `${p.name} — ${stackLabel(p)}`, onClick: () => act('setCurrent', p.path) })),
           ...(c.projects.length === 0 ? [{ text: 'Nincs projekt a mappában' }] : []),
@@ -192,8 +189,8 @@ function TopBar({ st, compact, setCompact, openSettings }) {
       <span class="grow" />
 
       {!compact && (
-        <button class="pill-btn grab-btn" disabled={c.grabbing} onClick={() => act('grab')}>
-          {c.grabbing ? <Spinner /> : <Icon name="externaldrive.fill.badge.plus" size={11} />}
+        <button class="pill plain" disabled={c.grabbing} onClick={() => act('grab')}>
+          {c.grabbing ? <Spinner /> : <Icon name="externaldrive.fill.badge.plus" size={13} />}
           <span>Projektfájlok letöltése (T:)</span>
         </button>
       )}
@@ -216,30 +213,31 @@ function StreamCard({ st, style, className }) {
   }, [cap.active]);
   const showVideo = cap.active;
   return (
-    <Card title="Élő közvetítés" icon="dot.radiowaves.left.and.right" tint={cap.active ? 'var(--del)' : 'var(--dim)'} style={style} className={className}
+    <Card title="Élő közvetítés" icon="dot.radiowaves.left.and.right" style={style} className={className}
       trailing={
-        <span class="live-badge" style={{ color: cap.active ? 'var(--del)' : 'var(--dim)' }}>
-          <PulseDot color="var(--del)" active={cap.active} />
-          <span>{cap.active ? 'ÉLŐ' : 'SZÜNET'}</span>
+        <span class={'live-badge ' + (cap.active ? 'on' : 'off')}>
+          <PulseDot active={cap.active} />
+          <span>{cap.active ? 'Élő' : 'Szünetel'}</span>
         </span>
       }>
-      <div class="stream-box">
+      <div class="stream-box well">
         {showVideo ? <video ref={vref} muted autoplay playsinline />
           : (
             <div class={'stream-empty' + (cap.error ? ' err' : '')}>
-              <Icon name="rectangle.dashed.badge.record" size={28} style={{ color: 'var(--dim)' }} />
+              <Icon name="rectangle.dashed.badge.record" size={28} />
               <span>{cap.error || 'Nyomd meg az Indítás gombot a Meet ablak figyeléséhez.'}</span>
             </div>
           )}
         {c.lastKeptAt && <div class="flash" key={c.lastKeptAt} />}
         {c.analysing && (
-          <div class="analysing"><Spinner size="mini" /><span>Sonnet elemez…</span></div>
+          <div class="analysing"><Spinner size="mini" /><span>Elemzés…</span></div>
         )}
       </div>
       <div class="stream-foot">
-        <span>{c.framesKept} változás észlelve · {c.framesAnalysed} elemezve</span>
+        <span><b>{c.framesKept}</b> változás észlelve</span>
+        <span><b>{c.framesAnalysed}</b> elemezve</span>
         <span class="card-spacer" />
-        <button class="link-btn accent" disabled={!c.running || c.analysing} onClick={() => act('analyseNow')}>Elemzés most</button>
+        <button class="link-btn" disabled={!c.running || c.analysing} onClick={() => act('analyseNow')}>Elemzés most</button>
       </div>
     </Card>
   );
@@ -252,17 +250,19 @@ function NowCodingCard({ st, style, className }) {
   const [manual, setManual] = useState('');
   const submit = () => { act('submitManual', manual); setManual(''); };
   const a = c.agent;
+  const live = a.active || c.teacherArea !== '';
   return (
-    <Card title="Most ezen dolgozunk" icon="hammer.fill" tint={a.active ? 'var(--accent)' : 'var(--dim)'} style={style} className={className}
-      trailing={a.active ? <button class="link-btn del" onClick={() => act('stopAgent')}>Megszakítás</button> : null}>
-      <div class="area-title" key={c.teacherArea}>
+    <Card title="Most ezen dolgozunk" icon="hammer.fill" style={style}
+      className={(live ? 'now hue-nitro ' : '') + (className || '')}
+      trailing={a.active ? <button class="link-btn" onClick={() => act('stopAgent')}>Megszakítás</button> : null}>
+      <div class={'area-title' + (c.teacherArea === '' ? ' waiting' : '')} key={c.teacherArea}>
         {c.teacherArea === '' ? (c.current ? 'Várakozás a tanár képernyőjére…' : 'A projekt még nem dőlt el — csak jegyzetelek') : c.teacherArea}
       </div>
       {c.hint && !c.current && (
-        <div class="hint"><Icon name="questionmark.folder" size={11.5} /><span>A képernyőn látott projekt: {c.hint}</span></div>
+        <div class="hint"><Icon name="questionmark.folder" size={13} /><span>A képernyőn látott projekt: {c.hint}</span></div>
       )}
-      <div class="agent-box">
-        {a.active ? <Spinner /> : <Icon name="moon.zzz.fill" size={11} style={{ color: 'var(--dim)' }} />}
+      <div class="agent-row">
+        {a.active ? <Spinner /> : <Icon name="moon.zzz.fill" size={13} />}
         <div>
           <span class="t nowrap">{a.active ? a.title : 'Az ügynök tétlen'}</span>
           <MidText text={a.step} class="mono s" />
@@ -275,15 +275,15 @@ function NowCodingCard({ st, style, className }) {
       )}
       {c.queued && (
         <div class="queued">
-          <span class="lbl"><Icon name="clock" size={11.5} /><span>Sorban: {c.queued.title}</span></span>
-          {!a.active && <button class="link-btn accent" style={{ fontSize: '11.5px', fontWeight: 600 }} onClick={() => act('runQueued')}>Futtatás</button>}
+          <span class="lbl"><Icon name="clock" size={13} /><span>Sorban: {c.queued.title}</span></span>
+          {!a.active && <button class="link-btn" onClick={() => act('runQueued')}>Futtatás</button>}
         </div>
       )}
       <span class="card-spacer" />
       <div class="manual">
         <input type="text" value={manual} placeholder="Saját utasítás, pl. „valósítsd meg, ami most a képernyőn van”"
           onInput={e => setManual(e.currentTarget.value)} onKeyDown={e => { if (e.key === 'Enter') submit(); }} />
-        <button onClick={submit} style={{ color: manual === '' ? 'var(--dim)' : 'var(--accent)' }}><Icon name="arrow.up.circle.fill" size={18} /></button>
+        <button class="send" disabled={manual.trim() === ''} title="Küldés" aria-label="Utasítás küldése" onClick={submit}><Icon name="arrow.up" size={14} /></button>
       </div>
     </Card>
   );
@@ -295,11 +295,11 @@ function ChangeLogCard({ st, className }) {
   const [expanded, setExpanded] = useState(null);
   const changes = st.changes;
   return (
-    <Card title="Változásnapló" icon="list.bullet.rectangle.fill" tint="var(--ai)" className={className}
-      trailing={<span class="dim" style={{ fontSize: '11px' }}>{changes.length} módosítás</span>}>
+    <Card title="Változásnapló" icon="list.bullet.rectangle.fill" className={className}
+      trailing={<span class="count"><b>{changes.length}</b> módosítás</span>}>
       {changes.length === 0 ? (
         <div class="empty-col">
-          <Icon name="wand.and.stars" size={26} style={{ color: 'var(--dim)' }} />
+          <Icon name="wand.and.stars" size={26} />
           <span>Itt jelennek meg a módosítások, MI által írt címekkel.</span>
           {st.core.feed[0] && <span class="sub">{st.core.feed[0].text}</span>}
         </div>
@@ -321,20 +321,19 @@ function ChangeRow({ entry, expanded, toggle }) {
   return (
     <div class={'row' + (expanded ? ' open' : '')} onClick={toggle}>
       <div class="row-top">
-        <Icon name="sparkle" size={10} style={{ color: 'var(--ai)' }} />
-        <span class={'h' + (entry.undone ? ' undone' : '')} style={{ color: entry.undone ? 'var(--dim)' : '#fff' }}>{entry.header}</span>
+        <span class={'h' + (entry.undone ? ' undone' : '')}>{entry.header}</span>
         <span class="time">{time}</span>
       </div>
       <div class="row-meta">
         <span class="proj">{entry.project}</span>
-        <span class="dim">{entry.files.length} fájl</span>
+        <span class="num">{entry.files.length} fájl</span>
         <span class="mono add">+{sumOf(entry.files, 'added')}</span>
         <span class="mono del">−{sumOf(entry.files, 'removed')}</span>
         <span class="card-spacer" />
         {entry.undone
-          ? <span style={{ color: 'var(--warn)' }}>visszavonva</span>
-          : <button class="link-btn dim" onClick={e => { e.stopPropagation(); act('undo', entry.id); }}>Visszavonás</button>}
-        <Icon name="chevron.down" size={10} className={'chev' + (expanded ? ' open' : '')} style={{ color: 'var(--dim)' }} />
+          ? <span>Visszavonva</span>
+          : <button class="link-btn soft" onClick={e => { e.stopPropagation(); act('undo', entry.id); }}>Visszavonás</button>}
+        <Icon name="chevron.down" size={10} className={'chev' + (expanded ? ' open' : '')} />
       </div>
       {expanded && (
         <>
@@ -357,19 +356,18 @@ function ChangeRow({ entry, expanded, toggle }) {
 
 function DiffView({ diff }) {
   const lines = diff.split('\n').slice(0, 400);
-  const color = l => {
-    if (l.startsWith('+++') || l.startsWith('---') || l.startsWith('diff ') || l.startsWith('index ')) return 'var(--dim)';
-    if (l.startsWith('@@')) return 'var(--ai)';
-    if (l.startsWith('+')) return 'var(--add)';
-    if (l.startsWith('-')) return 'var(--del)';
-    return 'rgba(255,255,255,0.75)';
+  const kind = l => {
+    if (l.startsWith('+++') || l.startsWith('---') || l.startsWith('diff ') || l.startsWith('index ')) return ' m';
+    if (l.startsWith('@@')) return ' h';
+    if (l.startsWith('+')) return ' a';
+    if (l.startsWith('-')) return ' d';
+    return '';
   };
   return (
-    <div class="diff sel mono" onClick={e => e.stopPropagation()}>
+    <div class="diff well sel mono" onClick={e => e.stopPropagation()}>
       <div class="diff-in">
         {lines.map((l, i) => (
-          <div key={i} class={'diff-line' + (l.startsWith('+') && !l.startsWith('+++') ? ' a' : (l.startsWith('-') && !l.startsWith('---') ? ' d' : ''))}
-            style={{ color: color(l) }}>{l === '' ? ' ' : l}</div>
+          <div key={i} class={'diff-line' + kind(l)}>{l === '' ? ' ' : l}</div>
         ))}
       </div>
     </div>
@@ -398,17 +396,17 @@ function DevCard({ st, style }) {
   const logRef = useRef();
   useEffect(() => { const el = logRef.current; if (el) el.scrollTop = el.scrollHeight; }, [dev.lines.length, tab]);
   return (
-    <Card title="Fejlesztői szerver" icon="server.rack" tint={dev.running ? 'var(--accent)' : 'var(--dim)'} style={style}
+    <Card title="Fejlesztői szerver" icon="server.rack" style={style}
       trailing={
         <div class="dev-head">
-          <PulseDot color="var(--accent)" active={dev.running} />
+          <PulseDot active={dev.running} />
           <span class="mono url">{dev.url || dev.status}</span>
           <span class="seg">
             <button class={tab === 0 ? 'on' : ''} onClick={() => setTab(0)}>Előnézet</button>
             <button class={tab === 1 ? 'on' : ''} onClick={() => setTab(1)}>Kimenet</button>
           </span>
           {st.core.current && (
-            <button class="link-btn accent" onClick={() => act('devToggle')}>{dev.running ? 'Leállítás' : 'Indítás'}</button>
+            <button class="link-btn" onClick={() => act('devToggle')}>{dev.running ? 'Leállítás' : 'Indítás'}</button>
           )}
         </div>
       }>
@@ -416,12 +414,12 @@ function DevCard({ st, style }) {
         dev.url ? <WebPreview url={dev.url} token={dev.reloadToken} />
           : (
             <div class="empty-col">
-              <Icon name="globe" size={24} style={{ color: 'var(--dim)' }} />
+              <Icon name="globe" size={24} />
               <span>{!st.core.current ? 'A szerver a projekt felismerése után indul.' : dev.status}</span>
             </div>
           )
       ) : (
-        <div class="log sel mono" ref={logRef}>
+        <div class="log well sel mono" ref={logRef}>
           <div class="log-in">
             {dev.lines.map((l, i) => <div class="log-line" key={i}>{l === '' ? ' ' : l}</div>)}
           </div>
@@ -467,8 +465,8 @@ function NotesCard({ st, className, home }) {
   useEffect(() => { const el = ref.current; if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' }); }, [notes]);
   const shown = st.home && notesFile.startsWith(st.home) ? '~' + notesFile.slice(st.home.length) : notesFile;
   return (
-    <Card title="Jegyzetek" icon="note.text" tint="var(--warn)" className={className}
-      trailing={<button class="dim" title="Megnyitás a Fájlkezelőben" onClick={() => act('revealNotes')}><Icon name="arrow.up.forward.square" size={12} /></button>}>
+    <Card title="Jegyzetek" icon="note.text" className={className}
+      trailing={<button class="icon-btn" title="Megnyitás a Fájlkezelőben" aria-label="Megnyitás a Fájlkezelőben" onClick={() => act('revealNotes')}><Icon name="arrow.up.forward.square" size={13} /></button>}>
       <div class="mono notes-path"><bdo dir="ltr">{shown}</bdo></div>
       {notes === '' ? (
         <div class="empty-col"><span>A jegyzetek itt frissülnek, ahogy a tanár képernyője változik.</span></div>
@@ -483,18 +481,21 @@ function NotesCard({ st, className, home }) {
 
 // ---------- Status bar ----------
 
-function StatusBar({ st }) {
+function StatusBar({ st, openSettings }) {
   const c = st.core;
   const f = c.feed[0];
+  const active = c.models.active;
   return (
     <div class="status">
-      <span class="grp"><PulseDot color="var(--accent)" active={c.running} /><span>{c.running ? 'Figyelés aktív' : 'Leállítva'}</span></span>
-      <span class="model">Sonnet 5.5 · közepes</span>
+      <span class={'grp' + (c.running ? ' on' : '')}><PulseDot active={c.running} /><span>{c.running ? 'Figyelés aktív' : 'Leállítva'}</span></span>
+      <button class="model" title="Modell kiválasztása" onClick={openSettings}>
+        {active?.label || (c.models.checking ? 'Modellek keresése…' : 'Nincs elérhető modell')}
+      </button>
       {c.current && <span class="nowrap" style={{ flex: 'none' }}>{stackLabel(c.current)}</span>}
-      {f && <span class="feed"><Icon name={f.icon} size={11} /><span>{f.text}</span></span>}
+      {f && <span class="feed"><Icon name={f.icon} size={12} /><span>{f.text}</span></span>}
       <span class="card-spacer" />
-      <span class={'cost' + (c.capped ? ' capped' : '')} style={{ whiteSpace: 'nowrap' }}>
-        {`Költség: $${c.cost.toFixed(2)} / $${Math.round(c.settings.costCap)}`}
+      <span class={'cost' + (c.capped ? ' capped' : '')} title="A szolgáltatók által jelentett költségek összege.">
+        Költség <b>{`$${c.cost.toFixed(2)}`}</b>{` / $${Math.round(c.settings.costCap)}`}
       </span>
     </div>
   );
@@ -504,6 +505,8 @@ function StatusBar({ st }) {
 
 function SettingsSheet({ st, close }) {
   const s = st.core.settings;
+  const { models, active, providers, checking, error } = st.core.models;
+  const unavailableChoice = s.model !== 'auto' && !models.some(m => m.id === s.model);
   const [groups, setGroups] = useState(s.groups.join(', '));
   const [tPath, setTPath] = useState(s.tPath);
   const [root, setRoot] = useState(s.projectsRoot);
@@ -521,6 +524,25 @@ function SettingsSheet({ st, close }) {
       <div class="sheet">
         <h1>Beállítások</h1>
         <div class="field">
+          <div class="model-field-heading">
+            <label for="model-choice">Modell</label>
+            <button class="link-btn soft" disabled={checking} onClick={() => act('refreshModels')}>
+              {checking ? 'Keresés…' : 'Modellek frissítése'}
+            </button>
+          </div>
+          <select id="model-choice" value={s.model} onChange={e => set({ model: e.currentTarget.value })}>
+            <option value="auto">Automatikus</option>
+            {unavailableChoice && <option value={s.model} disabled>{s.model} (nem elérhető)</option>}
+            {models.map(m => <option key={m.id} value={m.id}>{m.label}</option>)}
+          </select>
+          {s.model === 'auto' && <span class="hint2">Elsőként a Claude Sonnetet, utána a Codexet, végül az OpenCode-ot próbálja.</span>}
+          {unavailableChoice && active && <span class="hint2">A mentett modell nem érhető el. Az OpenCode veszi át a feladatait.</span>}
+          {active?.provider === 'opencode' && <span class="hint2">Az OpenCode-ban beállított modell fut, a hozzá tartozó díjazással.</span>}
+          {Object.entries(providers).filter(([, p]) => p.status !== 'ready').map(([id, p]) =>
+            <span class="hint2" key={id}>{p.detail}</span>)}
+          {error && <span class="hint2">{error}</span>}
+        </div>
+        <div class="field">
           <label>T: meghajtó helye</label>
           <input type="text" value={tPath} onInput={e => { setTPath(e.currentTarget.value); set({ tPath: e.currentTarget.value }); }} />
           <span class="hint2">A megosztott tanári meghajtó csatolási pontja.</span>
@@ -536,8 +558,10 @@ function SettingsSheet({ st, close }) {
           <input type="text" value={root} onInput={e => { setRoot(e.currentTarget.value); set({ projectsRoot: e.currentTarget.value }); }} />
           <span class="hint2">Ide kerülnek a letöltött projektek és a napi jegyzetek.</span>
         </div>
-        <label class="check"><input type="checkbox" checked={s.autoRun} onChange={e => set({ autoRun: e.currentTarget.checked })} />Önálló kódolás (jóváhagyás nélkül)</label>
-        <label class="check"><input type="checkbox" checked={s.autoGrab} onChange={e => set({ autoGrab: e.currentTarget.checked })} />Projektfájlok automatikus letöltése, ha a projekt nincs meg</label>
+        <div class="toggles">
+          <label class="check"><input type="checkbox" role="switch" checked={s.autoRun} onChange={e => set({ autoRun: e.currentTarget.checked })} />Önálló kódolás (jóváhagyás nélkül)</label>
+          <label class="check"><input type="checkbox" role="switch" checked={s.autoGrab} onChange={e => set({ autoGrab: e.currentTarget.checked })} />Projektfájlok automatikus letöltése, ha a projekt nincs meg</label>
+        </div>
         <div class="slider-row">
           <label>Elemzés gyakorisága</label>
           <input type="range" min="15" max="180" step="15" value={interval} onInput={e => { const v = Number(e.currentTarget.value); setIntervalSec(v); set({ intervalSec: v }); }} />
@@ -548,7 +572,7 @@ function SettingsSheet({ st, close }) {
           <input type="range" min="1" max="30" step="1" value={cap} onInput={e => { const v = Number(e.currentTarget.value); setCap(v); set({ costCap: v }); }} />
           <span class="val">{`$${Math.round(cap)}`}</span>
         </div>
-        <div class="sheet-foot"><button class="primary" autofocus onClick={done}>Kész</button></div>
+        <div class="sheet-foot"><button class="pill" autofocus onClick={done}><span>Kész</span><span class="pill-chip"><Icon name="checkmark" size={12} /></span></button></div>
       </div>
     </div>
   );

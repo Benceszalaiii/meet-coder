@@ -18,7 +18,7 @@ MeetCoder watches the teacher's shared screen, keeps class notes, and keeps the 
 
 ## Positioning
 
-It works from what is on the screen alone. Nothing is recorded from audio, and all model work is one model at one setting: Sonnet 5.5 at medium effort, through the locally installed Claude Code.
+MeetCoder uses the shared screen and its OCR text as classroom input. On Windows and macOS, the model selected in Settings handles screen analysis, project matching and coding. Automatic selection prefers a signed-in Claude subscription, then a signed-in ChatGPT subscription through Codex, then the locally configured OpenCode CLI.
 
 ## Operating Context
 

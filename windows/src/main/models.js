@@ -24,6 +24,7 @@ const Paths = {
 };
 
 const DEFAULT_SETTINGS = {
+  model: 'auto',
   tPath: 'T:\\',
   groups: [],
   projectsRoot: '~/school/projects',

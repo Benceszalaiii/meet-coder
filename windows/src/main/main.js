@@ -6,7 +6,7 @@ setAppData(app.getPath('appData'));
 const { AppState, CORE, DEV, CHANGES, NOTES } = require('./appstate');
 const { icon } = require('./tray-icons');
 
-const BG = '#090b10'; // Theme.bg
+const BG = '#07072a'; // royal-night, oklch(0.16 0.069 275.2)
 
 app.commandLine.appendSwitch('disable-renderer-backgrounding');
 app.commandLine.appendSwitch('disable-backgrounding-occluded-windows');
@@ -74,7 +74,7 @@ function createWindow() {
     width: 1380, height: 860, useContentSize: true, minWidth: 1120, minHeight: 700,
     title: 'MeetCoder', backgroundColor: BG, icon: path.join(__dirname, '..', '..', 'build', 'icon.png'), show: false, autoHideMenuBar: true,
     titleBarStyle: 'hidden',
-    titleBarOverlay: { color: BG, symbolColor: '#ffffff', height: 44 },
+    titleBarOverlay: { color: BG, symbolColor: '#d9dbf2', height: 44 },
     webPreferences: {
       preload: path.join(__dirname, '..', 'preload.js'),
       contextIsolation: true, nodeIntegration: false, webviewTag: true, backgroundThrottling: false,
@@ -147,6 +147,7 @@ const actions = {
   submitManual: t => state.submitManual(String(t || '')),
   undo: id => state.undo(id),
   setSettings: patch => state.updateSettings(patch),
+  refreshModels: () => state.models.refresh(),
   devToggle: () => { if (state.dev.running) state.dev.stop(); else if (state.current) state.dev.start(state.current); },
   setCompact: (c, resize) => setCompact(!!c, !!resize),
   revealNotes: () => { if (state.notesFile) shell.showItemInFolder(state.notesFile); },
@@ -175,6 +176,7 @@ app.whenReady().then(() => {
   createWindow();
   updateTray();
   state.bootstrap();
+  state.models.refresh();
 });
 app.on('second-instance', showDashboard);
 app.on('activate', showDashboard);

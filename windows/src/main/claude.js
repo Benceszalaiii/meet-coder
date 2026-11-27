@@ -5,14 +5,14 @@ const Shell = require('./shell');
 const model = 'claude-sonnet-5-5';
 const effort = 'medium';
 
-const base = [
-  '-p', '--model', model, '--effort', effort,
+const base = selected => [
+  '-p', '--model', selected, '--effort', effort,
   '--safe-mode', '--strict-mcp-config', '--no-session-persistence',
 ];
 
 /** One-shot structured question. Read is the only tool (for the screenshot). */
-async function ask({ system, prompt, schema, readDirs = [] }) {
-  const args = [...base,
+async function ask({ model: selected = model, system, prompt, schema, readDirs = [] }) {
+  const args = [...base(selected),
     '--output-format', 'json', '--tools', 'Read', '--allowedTools', 'Read',
     '--permission-prompts', 'none', '--system-prompt', system, '--json-schema', schema];
   for (const d of readDirs) args.push('--add-dir', d);
@@ -20,20 +20,23 @@ async function ask({ system, prompt, schema, readDirs = [] }) {
   const res = { structured: null, text: '', cost: 0, error: null };
   let o = null;
   try { const j = JSON.parse(r.out); if (j && typeof j === 'object' && !Array.isArray(j)) o = j; } catch {}
-  if (!o) { res.error = head(r.err === '' ? r.out : r.err, 300); return res; }
+  if (!o) { res.error = head(r.err || r.out || 'A Claude nem adott választ.', 300); return res; }
   res.cost = typeof o.total_cost_usd === 'number' ? o.total_cost_usd : 0;
   res.text = typeof o.result === 'string' ? o.result : '';
   res.structured = o.structured_output && typeof o.structured_output === 'object' ? o.structured_output : null;
   if (!res.structured) {
     try { const j = JSON.parse(res.text); if (j && typeof j === 'object' && !Array.isArray(j)) res.structured = j; } catch {}
   }
-  if (o.is_error === true) res.error = head(res.text, 300);
+  if (o.is_error || r.code !== 0) {
+    res.error = head([o.error, res.text, r.err].filter(Boolean).join(' ') || 'Claude-hiba', 300);
+    res.structured = null;
+  }
   return res;
 }
 
 /** Autonomous coding run inside a project folder. Events stream back as parsed JSON. */
-async function agent({ proc, cwd, prompt, system, allowCommands, readDirs, budget, onEvent }) {
-  const args = [...base,
+async function agent({ model: selected = model, proc, cwd, prompt, system, allowCommands, readDirs, budget, onEvent }) {
+  const args = [...base(selected),
     '--output-format', 'stream-json', '--verbose',
     '--permission-mode', 'acceptEdits', '--permission-prompts', 'none',
     '--append-system-prompt', system,
@@ -48,21 +51,25 @@ async function agent({ proc, cwd, prompt, system, allowCommands, readDirs, budge
   }
   for (const d of readDirs) args.push('--add-dir', d);
   const res = { structured: null, text: '', cost: 0, error: null };
+  let diagnostic = '', completed = false;
   const code = await proc.run(['claude', ...args], {
     cwd, stdin: prompt,
-    onLine: line => {
+    onLine: (line, source) => {
+      if (source === 'stderr') { if (line.trim()) diagnostic = head(line, 300); return; }
       let o;
       try { o = JSON.parse(line); } catch { return; }
       if (!o || typeof o !== 'object' || Array.isArray(o)) return;
       if (o.type === 'result') {
+        completed = true;
         res.cost = typeof o.total_cost_usd === 'number' ? o.total_cost_usd : 0;
         res.text = typeof o.result === 'string' ? o.result : '';
-        if (o.is_error === true) res.error = head(res.text, 300);
+        if (o.is_error) res.error = head([o.error, res.text, ...(Array.isArray(o.errors) ? o.errors : [])].filter(Boolean).join(' ') || 'Claude-hiba', 300);
       }
+      if (o.type === 'assistant' && o.error) res.error = head(String(o.error), 300);
       onEvent(o);
     },
   });
-  if (code !== 0 && res.text === '' && res.error == null) res.error = `agent exited with code ${code}`;
+  if ((code !== 0 || !completed) && !res.error) res.error = diagnostic || `Claude kilépési kód: ${code}, hiányos válasz.`;
   return res;
 }
 

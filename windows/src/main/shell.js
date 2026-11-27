@@ -16,6 +16,7 @@ const env = (() => {
   let p = e[key] || '';
   const extra = [
     path.join(home, '.local', 'bin'),
+    path.join(home, '.opencode', 'bin'),
     path.join(home, '.config', 'herd-lite', 'bin'),
     process.env.APPDATA ? path.join(process.env.APPDATA, 'npm') : null,
     process.env.LOCALAPPDATA ? path.join(process.env.LOCALAPPDATA, 'Programs', 'claude') : null,
@@ -74,18 +75,23 @@ function spawnResolved(exe, args, opts) {
 }
 
 /** Runs a command to completion and collects its output. */
-function run(exe, args, { cwd, stdin } = {}) {
+function run(exe, args, { cwd, stdin, timeoutMs, env: childEnv = env } = {}) {
   return new Promise(resolveP => {
     let p;
     try {
-      p = spawnResolved(exe, args, { cwd, env, stdio: ['pipe', 'pipe', 'pipe'] });
+      p = spawnResolved(exe, args, { cwd, env: childEnv, stdio: ['pipe', 'pipe', 'pipe'], detached: !!timeoutMs && !isWin });
     } catch (err) { resolveP({ code: -1, out: '', err: String(err.message || err) }); return; }
     const out = [], err = [];
-    let done = false;
+    let done = false, timer;
     const finish = (code, extra) => {
       if (done) return; done = true;
+      clearTimeout(timer);
       resolveP({ code, out: Buffer.concat(out).toString('utf8'), err: Buffer.concat(err).toString('utf8') + (extra || '') });
     };
+    if (timeoutMs > 0) timer = setTimeout(() => {
+      terminateTree(p);
+      finish(-1, 'Command timed out');
+    }, timeoutMs);
     p.stdout.on('data', d => out.push(d));
     p.stderr.on('data', d => err.push(d));
     p.on('error', e => finish(-1, String(e.message || e)));
@@ -105,7 +111,7 @@ class StreamProc {
    * target: an argv array (run directly) or { script } (a cmd.exe command line).
    * Resolves with the exit code once the process and its output are finished.
    */
-  run(target, { cwd, stdin, onLine }) {
+  run(target, { cwd, stdin, onLine, env: childEnv = env }) {
     return new Promise(resolveP => {
       let p;
       try {
@@ -114,16 +120,16 @@ class StreamProc {
             isWin ? ['/d', '/s', '/c', `"chcp 65001 >nul & ${target.script}"`] : ['-c', target.script],
             { cwd, env, windowsHide: true, windowsVerbatimArguments: true, stdio: ['pipe', 'pipe', 'pipe'], detached: !isWin });
         } else {
-          p = spawnResolved(target[0], target.slice(1), { cwd, env, stdio: ['pipe', 'pipe', 'pipe'], detached: !isWin });
+          p = spawnResolved(target[0], target.slice(1), { cwd, env: childEnv, stdio: ['pipe', 'pipe', 'pipe'], detached: !isWin });
         }
       } catch { resolveP(-1); return; }
       this.process = p;
       let open = 2, exit = null, settled = false;
       const settle = () => { if (!settled && open === 0 && exit !== null) { settled = true; resolveP(exit); } };
-      const pump = stream => {
+      const pump = (stream, source) => {
         const dec = new StringDecoder('utf8');
         let buf = '';
-        const emit = l => onLine(l.endsWith('\r') ? l.slice(0, -1) : l);
+        const emit = l => onLine(l.endsWith('\r') ? l.slice(0, -1) : l, source);
         stream.on('data', d => {
           buf += dec.write(d);
           let i;
@@ -132,8 +138,8 @@ class StreamProc {
         stream.on('end', () => { buf += dec.end(); if (buf) emit(buf); buf = ''; open--; settle(); });
         stream.on('error', () => { open--; settle(); });
       };
-      pump(p.stdout); pump(p.stderr);
-      p.on('error', () => { exit = -1; open = 0; settle(); });
+      pump(p.stdout, 'stdout'); pump(p.stderr, 'stderr');
+      p.on('error', error => { onLine(error.message, 'stderr'); exit = -1; open = 0; settle(); });
       p.on('close', code => { exit = code == null ? -1 : code; settle(); });
       // give lingering grandchildren 2s of output after exit, like the original
       p.on('exit', () => setTimeout(() => { if (exit === null) exit = p.exitCode == null ? -1 : p.exitCode; open = 0; settle(); }, 2000));
@@ -144,18 +150,18 @@ class StreamProc {
   }
 
   terminate() {
-    const p = this.process;
-    if (!p || !this.isRunning) return;
-    const pid = p.pid;
-    if (isWin) {
-      // Console children ignore a polite taskkill, and a delayed second attempt would never run if the app is quitting,
-      // so the whole tree is killed at once.
-      cp.spawn('taskkill', ['/PID', String(pid), '/T', '/F'], { windowsHide: true, stdio: 'ignore' }).on('error', () => {});
-    } else {
-      try { process.kill(-pid, 'SIGTERM'); } catch {}
-      setTimeout(() => { try { process.kill(-pid, 'SIGKILL'); } catch {} }, 3000);
-    }
+    if (this.isRunning) terminateTree(this.process);
   }
 }
 
-module.exports = { env, run, StreamProc, findOnPath, resolve, isWin };
+function terminateTree(p) {
+  if (!p.pid) return;
+  if (isWin) {
+    cp.spawn('taskkill', ['/PID', String(p.pid), '/T', '/F'], { windowsHide: true, stdio: 'ignore' }).on('error', () => {});
+  } else {
+    try { process.kill(-p.pid, 'SIGTERM'); } catch {}
+    setTimeout(() => { if (p.exitCode == null && p.signalCode == null) try { process.kill(-p.pid, 'SIGKILL'); } catch {} }, 3000).unref();
+  }
+}
+
+module.exports = { env, run, StreamProc, findOnPath, resolve, spawnResolved, isWin };

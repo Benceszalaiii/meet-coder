@@ -23,6 +23,8 @@ struct Settings: Codable, Equatable {
     var tPath = "/Volumes/Diák közös informatika"
     var groups: [String] = []
     var projectsRoot = "~/school/projects"
+    // Optional so existing settings files decode with automatic model selection.
+    var modelSelection: String?
     var autoRun = true
     var autoGrab = true
     var intervalSec: Double = 45

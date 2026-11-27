@@ -5,6 +5,7 @@
   "description": "MeetCoder",
   "main": "src/main/main.js",
   "scripts": {
+    "test": "node --test",
     "prepare": "node scripts/prepare-assets.js && node scripts/build-ui.js",
     "start": "npm run prepare && electron .",
     "dist": "npm run prepare && electron-builder --win --x64"
@@ -73,6 +74,9 @@
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
+    },
+    "portable": {
+      "artifactName": "MeetCoder-${version}-${arch}-portable.${ext}"
     },
     "artifactName": "MeetCoder-${version}-${arch}.${ext}"
   },

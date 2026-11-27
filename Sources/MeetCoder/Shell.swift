@@ -21,7 +21,7 @@ enum Shell {
                 path = String(s[a.upperBound..<b.lowerBound])
             }
         }
-        let extra = ["/opt/homebrew/bin", "/usr/local/bin", "\(home)/.local/bin", "\(home)/.config/herd-lite/bin"]
+        let extra = ["/opt/homebrew/bin", "/usr/local/bin", "\(home)/.local/bin", "\(home)/.opencode/bin", "\(home)/.config/herd-lite/bin"]
         for x in extra where !path.contains(x) { path += ":" + x }
         e["PATH"] = path
         e["NO_COLOR"] = "1"
@@ -30,7 +30,7 @@ enum Shell {
     }()
 
     @discardableResult
-    static func run(_ exe: String, _ args: [String], cwd: String? = nil, stdin: String? = nil) async -> (code: Int32, out: String, err: String) {
+    static func run(_ exe: String, _ args: [String], cwd: String? = nil, stdin: String? = nil, timeout: TimeInterval? = nil) async -> (code: Int32, out: String, err: String) {
         await withCheckedContinuation { cont in
             DispatchQueue.global().async {
                 let p = Process()
@@ -44,6 +44,9 @@ enum Shell {
                     cont.resume(returning: (-1, "", "\(error.localizedDescription)"))
                     return
                 }
+                let deadline = DispatchWorkItem { if p.isRunning { kill(p.processIdentifier, SIGKILL) } }
+                if let timeout { DispatchQueue.global().asyncAfter(deadline: .now() + timeout, execute: deadline) }
+                defer { deadline.cancel() }
                 DispatchQueue.global().async {
                     if let stdin, let d = stdin.data(using: .utf8) { try? i.fileHandleForWriting.write(contentsOf: d) }
                     try? i.fileHandleForWriting.close()
@@ -66,12 +69,12 @@ final class StreamProc {
     private var process: Process?
     var isRunning: Bool { process?.isRunning ?? false }
 
-    func run(_ argv: [String], cwd: String, stdin: String? = nil, onLine: @escaping (String) -> Void) async -> Int32 {
+    func run(_ argv: [String], cwd: String, stdin: String? = nil, environment: [String: String] = [:], onLine: @escaping (String) -> Void) async -> Int32 {
         await withCheckedContinuation { (cont: CheckedContinuation<Int32, Never>) in
             let p = Process()
             p.executableURL = URL(fileURLWithPath: "/usr/bin/perl")
             p.arguments = ["-e", "setpgrp(0,0); exec @ARGV or exit 127;"] + argv
-            p.environment = Shell.env
+            p.environment = Shell.env.merging(environment) { _, new in new }
             p.currentDirectoryURL = URL(fileURLWithPath: cwd)
             let pipe = Pipe(), inPipe = Pipe()
             p.standardOutput = pipe; p.standardError = pipe; p.standardInput = inPipe
