@@ -33,10 +33,18 @@ export function KineticHeadline({
     });
     observer.observe(root);
 
+    // Last written axes per letter. Most letters sit at rest far from the pointer, so writing
+    // only the ones that changed keeps style and layout invalidation to the letters near it.
+    const written = letters.map((): [number, number] => [NaN, NaN]);
     const setAxes = (values: [number, number][]) => {
       letters.forEach((letter, i) => {
-        letter.style.setProperty("--w", String(values[i][0]));
-        letter.style.setProperty("--r", String(values[i][1]));
+        const [w, r] = values[i];
+        const last = written[i];
+        if (last[0] === w && last[1] === r) return;
+        last[0] = w;
+        last[1] = r;
+        letter.style.setProperty("--w", String(w));
+        letter.style.setProperty("--r", String(r));
       });
     };
 
@@ -96,9 +104,13 @@ export function KineticHeadline({
       };
     }
 
+    // Touch screens get an ambient wave instead. Every step re-lays out the headline, so it runs
+    // at 30 fps, which reads the same for a 760 ms period at a fraction of the work.
     const started = performance.now();
+    let last = 0;
     const wave = (now: number) => {
-      if (visible) {
+      if (visible && now - last >= 32) {
+        last = now;
         setAxes(
           letters.map((_, i): [number, number] => {
             const e = (Math.sin((now - started) / 760 - i * 0.32) + 1) / 2;
