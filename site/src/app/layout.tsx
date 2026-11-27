@@ -4,7 +4,7 @@ import "./globals.css";
 
 const allo = localFont({
   src: "./fonts/AlloVariable.woff2",
-  weight: "100 900",
+  weight: "400 900",
   style: "normal",
   display: "swap",
   variable: "--font-allo",

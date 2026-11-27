@@ -376,10 +376,8 @@ struct StreamCard: View {
         } content: {
             ZStack {
                 Color.clear.well()
-                if let img = capture.preview, capture.active {
-                    Image(decorative: img, scale: 1).resizable().aspectRatio(contentMode: .fit)
-                        .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
-                        .padding(4)
+                if capture.active {
+                    LivePreview(feed: capture.feed)
                 } else {
                     VStack(spacing: 10) {
                         Image(systemName: "rectangle.dashed.badge.record").font(.system(size: 28)).foregroundStyle(Theme.royalInk.opacity(0.45))
@@ -412,6 +410,19 @@ struct StreamCard: View {
                     .disabled(!state.running || state.analysing)
             }
             .font(Theme.font(12.5)).monospacedDigit().foregroundStyle(Theme.royalInkSoft)
+        }
+    }
+}
+
+/// Redraws at the capture rate on its own, so the rest of the stream card does not.
+struct LivePreview: View {
+    @ObservedObject var feed: PreviewFeed
+
+    var body: some View {
+        if let img = feed.image {
+            Image(decorative: img, scale: 1).resizable().interpolation(.medium).aspectRatio(contentMode: .fit)
+                .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
+                .padding(4)
         }
     }
 }
@@ -725,7 +736,6 @@ struct NotesCard: View {
     @EnvironmentObject var state: AppState
 
     var body: some View {
-        let lines = state.notes.split(separator: "\n", omittingEmptySubsequences: false).suffix(200).map(String.init)
         Card(title: "Jegyzetek", icon: "note.text") {
             IconButton(icon: "arrow.up.forward.square", help: "Megnyitás a Finderben") {
                 NSWorkspace.shared.selectFile(state.notesFile, inFileViewerRootedAtPath: "")
@@ -737,15 +747,26 @@ struct NotesCard: View {
             if state.notes.isEmpty {
                 VStack { Spacer(); Text("A jegyzetek itt frissülnek, ahogy a tanár képernyője változik.").font(Theme.font(13)).foregroundStyle(Theme.royalInkSoft).multilineTextAlignment(.center).frame(maxWidth: 260); Spacer() }.frame(maxWidth: .infinity)
             } else {
-                ScrollViewReader { proxy in
-                    ScrollView {
-                        VStack(alignment: .leading, spacing: 5) {
-                            ForEach(Array(lines.enumerated()), id: \.offset) { i, l in noteLine(l).id(i) }
-                        }.frame(maxWidth: .infinity, alignment: .leading).textSelection(.enabled)
-                    }
-                    .onChange(of: state.notes) { _, _ in withAnimation { proxy.scrollTo(lines.count - 1, anchor: .bottom) } }
-                }
+                NotesBody(notes: state.notes).equatable()
             }
+        }
+    }
+}
+
+/// The rendered notes. AppState publishes on every agent step and log line; this only
+/// re-parses its Markdown when the notes text itself changes.
+struct NotesBody: View, Equatable {
+    let notes: String
+
+    var body: some View {
+        let lines = notes.split(separator: "\n", omittingEmptySubsequences: false).suffix(200).map(String.init)
+        ScrollViewReader { proxy in
+            ScrollView {
+                VStack(alignment: .leading, spacing: 5) {
+                    ForEach(Array(lines.enumerated()), id: \.offset) { i, l in noteLine(l).id(i) }
+                }.frame(maxWidth: .infinity, alignment: .leading).textSelection(.enabled)
+            }
+            .onChange(of: notes) { _, _ in withAnimation { proxy.scrollTo(lines.count - 1, anchor: .bottom) } }
         }
     }
 

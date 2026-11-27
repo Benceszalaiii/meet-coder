@@ -1,5 +1,5 @@
 import { render } from 'preact';
-import { useState, useEffect, useRef, useLayoutEffect, useCallback } from 'preact/hooks';
+import { useState, useEffect, useRef, useLayoutEffect, useCallback, useMemo } from 'preact/hooks';
 import { ICONS } from './icons.js';
 import { getVideo, getStream, onStreamChange, startCapture, stopCapture, snapshot } from './capture.js';
 
@@ -395,6 +395,9 @@ function DevCard({ st, style }) {
   const [tab, setTab] = useState(0);
   const logRef = useRef();
   useEffect(() => { const el = logRef.current; if (el) el.scrollTop = el.scrollHeight; }, [dev.lines.length, tab]);
+  // Each IPC state group arrives as a fresh object, so st.dev only changes identity when the dev
+  // server printed something; core updates (agent steps, cost) reuse the rendered lines.
+  const logLines = useMemo(() => dev.lines.map((l, i) => <div class="log-line" key={i}>{l === '' ? ' ' : l}</div>), [dev.lines]);
   return (
     <Card title="Fejlesztői szerver" icon="server.rack" style={style}
       trailing={
@@ -421,7 +424,7 @@ function DevCard({ st, style }) {
       ) : (
         <div class="log well sel mono" ref={logRef}>
           <div class="log-in">
-            {dev.lines.map((l, i) => <div class="log-line" key={i}>{l === '' ? ' ' : l}</div>)}
+            {logLines}
           </div>
         </div>
       )}
@@ -460,7 +463,7 @@ function NoteLine({ l }) {
 
 function NotesCard({ st, className, home }) {
   const { notes, notesFile } = st.notes;
-  const lines = notes.split('\n').slice(-200);
+  const rendered = useMemo(() => notes.split('\n').slice(-200).map((l, i) => <NoteLine key={i} l={l} />), [notes]);
   const ref = useRef();
   useEffect(() => { const el = ref.current; if (el) el.scrollTo({ top: el.scrollHeight, behavior: 'smooth' }); }, [notes]);
   const shown = st.home && notesFile.startsWith(st.home) ? '~' + notesFile.slice(st.home.length) : notesFile;
@@ -472,7 +475,7 @@ function NotesCard({ st, className, home }) {
         <div class="empty-col"><span>A jegyzetek itt frissülnek, ahogy a tanár képernyője változik.</span></div>
       ) : (
         <div class="scroll sel" ref={ref}>
-          <div class="note-lines">{lines.map((l, i) => <NoteLine key={i} l={l} />)}</div>
+          <div class="note-lines">{rendered}</div>
         </div>
       )}
     </Card>

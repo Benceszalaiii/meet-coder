@@ -43,13 +43,31 @@ export function KineticHeadline({
     if (matchMedia("(pointer: fine)").matches) {
       let x = -9999;
       let y = -9999;
+      // Letter centres in page coordinates, measured once and again only after a resize or a
+      // font swap. Reading boxes on every move would force a layout per frame, since the
+      // previous frame just changed every letter's weight.
+      let centres: [number, number][] | null = null;
+      const measure = () =>
+        letters.map((letter): [number, number] => {
+          const box = letter.getBoundingClientRect();
+          return [box.left + box.width / 2 + scrollX, box.top + box.height / 2 + scrollY];
+        });
+      const invalidate = () => {
+        centres = null;
+      };
+      // The landing animation moves letters for ~1.8s; measure after it settles.
+      const settle = setTimeout(invalidate, 1800);
+      document.fonts?.ready.then(invalidate);
+      window.addEventListener("resize", invalidate, { passive: true });
       const paint = () => {
         frame = 0;
         if (!visible) return;
+        centres ??= measure();
+        const px = x + scrollX;
+        const py = y + scrollY;
         setAxes(
-          letters.map((letter): [number, number] => {
-            const box = letter.getBoundingClientRect();
-            const d = Math.hypot(box.left + box.width / 2 - x, box.top + box.height / 2 - y);
+          centres.map(([cx, cy]): [number, number] => {
+            const d = Math.hypot(cx - px, cy - py);
             const t = Math.max(0, 1 - d / REACH);
             const e = t * t * (3 - 2 * t);
             return [Math.round(640 + e * 260), Math.round(e * 100)];
@@ -69,6 +87,8 @@ export function KineticHeadline({
       window.addEventListener("pointermove", onMove, { passive: true });
       document.documentElement.addEventListener("pointerleave", onLeave);
       return () => {
+        clearTimeout(settle);
+        window.removeEventListener("resize", invalidate);
         window.removeEventListener("pointermove", onMove);
         document.documentElement.removeEventListener("pointerleave", onLeave);
         observer.disconnect();

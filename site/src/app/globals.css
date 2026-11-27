@@ -670,6 +670,13 @@ pre {
   z-index: -1;
   pointer-events: none;
   mask-image: linear-gradient(to bottom, transparent, #000 18rem, #000 calc(100% - 12rem), transparent);
+  /* The breathing letters re-lay out every frame; keep that work inside this box. */
+  contain: strict;
+}
+
+.drift[data-paused] .drift-track,
+.drift[data-paused] .drift-track span {
+  animation-play-state: paused;
 }
 
 .drift-row {
