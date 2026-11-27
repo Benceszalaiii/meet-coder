@@ -1,0 +1,433 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-27T00:00:00Z",
+  "title": "Design System: MeetCoder",
+  "extensions": {
+    "colorMeta": {
+      "royal-night": {
+        "role": "neutral",
+        "displayName": "Royal Night",
+        "canonical": "oklch(0.16 0.069 275.2)",
+        "tonalRamp": [
+          "oklch(0.15 0.038 275.2)",
+          "oklch(0.26 0.069 275.2)",
+          "oklch(0.37 0.069 275.2)",
+          "oklch(0.48 0.069 275.2)",
+          "oklch(0.6 0.069 275.2)",
+          "oklch(0.71 0.069 275.2)",
+          "oklch(0.83 0.069 275.2)",
+          "oklch(0.95 0.038 275.2)"
+        ]
+      },
+      "royal-deep": {
+        "role": "neutral",
+        "displayName": "Royal Deep",
+        "canonical": "oklch(0.212 0.099 273.9)",
+        "tonalRamp": [
+          "oklch(0.15 0.054 273.9)",
+          "oklch(0.26 0.099 273.9)",
+          "oklch(0.37 0.099 273.9)",
+          "oklch(0.48 0.099 273.9)",
+          "oklch(0.6 0.099 273.9)",
+          "oklch(0.71 0.099 273.9)",
+          "oklch(0.83 0.099 273.9)",
+          "oklch(0.95 0.054 273.9)"
+        ]
+      },
+      "royal": {
+        "role": "primary",
+        "displayName": "Royal",
+        "canonical": "oklch(0.288 0.144 272.8)",
+        "tonalRamp": [
+          "oklch(0.15 0.079 272.8)",
+          "oklch(0.26 0.144 272.8)",
+          "oklch(0.37 0.144 272.8)",
+          "oklch(0.48 0.144 272.8)",
+          "oklch(0.6 0.144 272.8)",
+          "oklch(0.71 0.144 272.8)",
+          "oklch(0.83 0.144 272.8)",
+          "oklch(0.95 0.079 272.8)"
+        ]
+      },
+      "royal-lift": {
+        "role": "primary",
+        "displayName": "Royal Lift",
+        "canonical": "oklch(0.409 0.197 271.4)",
+        "tonalRamp": [
+          "oklch(0.15 0.108 271.4)",
+          "oklch(0.26 0.197 271.4)",
+          "oklch(0.37 0.197 271.4)",
+          "oklch(0.48 0.197 271.4)",
+          "oklch(0.6 0.197 271.4)",
+          "oklch(0.71 0.197 271.4)",
+          "oklch(0.83 0.197 271.4)",
+          "oklch(0.95 0.108 271.4)"
+        ]
+      },
+      "royal-glow": {
+        "role": "primary",
+        "displayName": "Royal Glow",
+        "canonical": "oklch(0.563 0.24 271.5)",
+        "tonalRamp": [
+          "oklch(0.15 0.132 271.5)",
+          "oklch(0.26 0.24 271.5)",
+          "oklch(0.37 0.24 271.5)",
+          "oklch(0.48 0.24 271.5)",
+          "oklch(0.6 0.24 271.5)",
+          "oklch(0.71 0.24 271.5)",
+          "oklch(0.83 0.24 271.5)",
+          "oklch(0.95 0.132 271.5)"
+        ]
+      },
+      "royal-ink": {
+        "role": "neutral",
+        "displayName": "Royal Ink",
+        "canonical": "oklch(0.897 0.031 281.8)",
+        "tonalRamp": [
+          "oklch(0.15 0.017 281.8)",
+          "oklch(0.26 0.031 281.8)",
+          "oklch(0.37 0.031 281.8)",
+          "oklch(0.48 0.031 281.8)",
+          "oklch(0.6 0.031 281.8)",
+          "oklch(0.71 0.031 281.8)",
+          "oklch(0.83 0.031 281.8)",
+          "oklch(0.95 0.017 281.8)"
+        ]
+      },
+      "royal-ink-soft": {
+        "role": "neutral",
+        "displayName": "Royal Ink Soft",
+        "canonical": "oklch(0.795 0.065 280.9)",
+        "tonalRamp": [
+          "oklch(0.15 0.036 280.9)",
+          "oklch(0.26 0.065 280.9)",
+          "oklch(0.37 0.065 280.9)",
+          "oklch(0.48 0.065 280.9)",
+          "oklch(0.6 0.065 280.9)",
+          "oklch(0.71 0.065 280.9)",
+          "oklch(0.83 0.065 280.9)",
+          "oklch(0.95 0.036 280.9)"
+        ]
+      },
+      "nitro": {
+        "role": "secondary",
+        "displayName": "Acid Lime",
+        "canonical": "oklch(0.9 0.21 124)",
+        "tonalRamp": [
+          "oklch(0.15 0.116 124)",
+          "oklch(0.26 0.21 124)",
+          "oklch(0.37 0.21 124)",
+          "oklch(0.48 0.21 124)",
+          "oklch(0.6 0.21 124)",
+          "oklch(0.71 0.21 124)",
+          "oklch(0.83 0.21 124)",
+          "oklch(0.95 0.116 124)"
+        ]
+      },
+      "nitro-lift": {
+        "role": "secondary",
+        "displayName": "Lime Lift",
+        "canonical": "oklch(0.94 0.19 118)",
+        "tonalRamp": [
+          "oklch(0.15 0.105 118)",
+          "oklch(0.26 0.19 118)",
+          "oklch(0.37 0.19 118)",
+          "oklch(0.48 0.19 118)",
+          "oklch(0.6 0.19 118)",
+          "oklch(0.71 0.19 118)",
+          "oklch(0.83 0.19 118)",
+          "oklch(0.95 0.105 118)"
+        ]
+      },
+      "nitro-ink": {
+        "role": "neutral",
+        "displayName": "Lime Ink",
+        "canonical": "oklch(0.24 0.055 132)",
+        "tonalRamp": [
+          "oklch(0.15 0.03 132)",
+          "oklch(0.26 0.055 132)",
+          "oklch(0.37 0.055 132)",
+          "oklch(0.48 0.055 132)",
+          "oklch(0.6 0.055 132)",
+          "oklch(0.71 0.055 132)",
+          "oklch(0.83 0.055 132)",
+          "oklch(0.95 0.03 132)"
+        ]
+      },
+      "nitro-ink-soft": {
+        "role": "neutral",
+        "displayName": "Lime Ink Soft",
+        "canonical": "oklch(0.36 0.075 130)",
+        "tonalRamp": [
+          "oklch(0.15 0.041 130)",
+          "oklch(0.26 0.075 130)",
+          "oklch(0.37 0.075 130)",
+          "oklch(0.48 0.075 130)",
+          "oklch(0.6 0.075 130)",
+          "oklch(0.71 0.075 130)",
+          "oklch(0.83 0.075 130)",
+          "oklch(0.95 0.041 130)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The kinetic headline, one per page; letters carry live wght and ROND."
+      },
+      "drift": {
+        "displayName": "Drift",
+        "purpose": "Giant class words drifting behind glass; decorative, aria-hidden."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section headlines; ROND 0, rounds to 100 when its subject resolves."
+      },
+      "headline-sm": {
+        "displayName": "Headline Small",
+        "purpose": "Platform names on the download page."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Panel and row titles."
+      },
+      "subtitle": {
+        "displayName": "Subtitle",
+        "purpose": "Principle and setup step titles, optional leading icon."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "Soft-ink paragraph under a headline, max 44ch."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text; strong is 650 in full ink."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Nav links, pills, undo buttons; ROND 30 on pills."
+      },
+      "mono": {
+        "displayName": "Mono",
+        "purpose": "Commands, paths, folder tree, build shells only."
+      }
+    },
+    "shadows": [
+      {
+        "name": "glass",
+        "value": "inset 0 1px 0 oklch(1 0 0 / 20%), 0 1px 2px color-mix(in oklch, var(--shade, oklch(0.12 0.06 275 / 80%)) 40%, transparent), 0 48px 96px -44px var(--shade, oklch(0.12 0.06 275 / 80%))",
+        "purpose": "Tinted glass panels over drift; paired with backdrop-filter: blur(28px) saturate(150%)."
+      },
+      {
+        "name": "solid",
+        "value": "inset 0 1px 0 oklch(1 0 0 / 12%), 0 48px 96px -44px var(--shade, oklch(0.12 0.06 275 / 80%))",
+        "purpose": "The same panel where nothing moves behind it."
+      },
+      {
+        "name": "pill",
+        "value": "inset 0 1px 0 oklch(1 0 0 / 28%), 0 14px 32px -16px var(--shade, oklch(0.12 0.06 275 / 80%))",
+        "purpose": "Action pills; paired with blur(16px) saturate(160%)."
+      },
+      {
+        "name": "nav",
+        "value": "inset 0 1px 0 oklch(1 0 0 / 22%), 0 20px 50px -30px var(--shade, oklch(0.12 0.06 275 / 80%))",
+        "purpose": "Fixed nav pill; paired with blur(24px) saturate(170%)."
+      },
+      {
+        "name": "sheet",
+        "value": "0 -28px 64px -36px color-mix(in oklch, var(--royal-night) 70%, transparent)",
+        "purpose": "Upward shadow of a field rising over the previous one (footer uses oklch(0 0 0 / 60%))."
+      },
+      {
+        "name": "card",
+        "value": "0 30px 60px -32px var(--shade, oklch(0.12 0.06 275 / 80%))",
+        "purpose": "The Royal folder tree inside the lime field."
+      }
+    ],
+    "motion": [
+      {
+        "name": "spring",
+        "value": "linear(0, 0.009, 0.035 2.1%, 0.141 4.4%, 0.723 12.9%, 0.938 16.7%, 1.017 19.4%, 1.067, 1.099 24.3%, 1.108 26%, 1.104, 1.088 30.6%, 1.019 39.6%, 0.995 43.6%, 0.983 47.6%, 0.984 51.5%, 0.998 65.4%, 1)",
+        "purpose": "One-overshoot spring for anything that lands, lifts, rounds or answers a press; 500-900ms. Intentional."
+      },
+      {
+        "name": "out",
+        "value": "cubic-bezier(0.16, 1, 0.3, 1)",
+        "purpose": "Color, underline and fade transitions, 200-400ms; hero foot rise 900ms."
+      },
+      {
+        "name": "stagger",
+        "value": "28ms",
+        "purpose": "Per-letter landing delay in the kinetic headline."
+      },
+      {
+        "name": "drift",
+        "value": "34s linear infinite (even rows 42s reverse)",
+        "purpose": "Horizontal loop of the drift rows."
+      },
+      {
+        "name": "breathe",
+        "value": "5.5s alternate, wght 520/ROND 0 to wght 900/ROND 100",
+        "purpose": "Drift letters breathing on the axes."
+      },
+      {
+        "name": "surface",
+        "value": "view() timeline, entry 0%-70%, scale 0.94 + translateY 3rem",
+        "purpose": "Glass panel entry; transform only, never opacity or filter."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "stack",
+        "value": "980px"
+      },
+      {
+        "name": "phone",
+        "value": "560px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Download Pill",
+      "kind": "button",
+      "refersTo": "pill",
+      "description": "Every action: a glass pill ending in the lime arrow chip.",
+      "html": "<a class=\"ds-pill\" href=\"#\">Letöltés<span class=\"ds-pill-chip\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.25\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 5v14\"/><path d=\"m19 12-7 7-7-7\"/></svg></span></a>",
+      "css": ".ds-pill { font-family: var(--font-allo, Allo), ui-sans-serif, system-ui, sans-serif; display: inline-flex; align-items: center; justify-content: space-between; gap: 0.875rem; height: 3.5rem; padding: 0 0.375rem 0 1.5rem; border-radius: 9999px; font-weight: 700; white-space: nowrap; text-decoration: none; color: var(--royal-ink, oklch(0.897 0.031 281.8)); font-variation-settings: 'ROND' 30; background: linear-gradient(180deg, oklch(1 0 0 / 18%), oklch(1 0 0 / 4%)), color-mix(in oklch, var(--royal, oklch(0.288 0.144 272.8)) 46%, transparent); border: 1px solid color-mix(in oklch, var(--royal-ink, oklch(0.897 0.031 281.8)) 34%, transparent); box-shadow: inset 0 1px 0 oklch(1 0 0 / 28%), 0 14px 32px -16px oklch(0.12 0.06 275 / 80%); backdrop-filter: blur(16px) saturate(160%); transition: translate 600ms var(--spring, cubic-bezier(0.34, 1.56, 0.64, 1)), scale 600ms var(--spring, cubic-bezier(0.34, 1.56, 0.64, 1)), border-color 200ms var(--out, cubic-bezier(0.16, 1, 0.3, 1)), font-variation-settings 600ms var(--spring, cubic-bezier(0.34, 1.56, 0.64, 1)); } .ds-pill:hover { translate: 0 -2px; border-color: color-mix(in oklch, var(--royal-ink, oklch(0.897 0.031 281.8)) 62%, transparent); font-variation-settings: 'ROND' 100; } .ds-pill:active { scale: 0.93 0.86; } .ds-pill:focus-visible { outline: 2px solid var(--nitro, oklch(0.9 0.21 124)); outline-offset: 3px; } .ds-pill-chip { display: grid; place-items: center; width: 2.75rem; height: 2.75rem; border-radius: 9999px; background: var(--nitro, oklch(0.9 0.21 124)); color: var(--nitro-ink, oklch(0.24 0.055 132)); transition: translate 600ms var(--spring, cubic-bezier(0.34, 1.56, 0.64, 1)), scale 600ms var(--spring, cubic-bezier(0.34, 1.56, 0.64, 1)); } .ds-pill:hover .ds-pill-chip { translate: 0.25rem 0; scale: 1.06; }"
+    },
+    {
+      "name": "Undo Button",
+      "kind": "button",
+      "refersTo": "icon-button",
+      "description": "Visszavonás: ink-ringed pill that tints and rounds on hover.",
+      "html": "<button class=\"ds-undo\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M9 14 4 9l5-5\"/><path d=\"M4 9h10.5a5.5 5.5 0 0 1 0 11H11\"/></svg>Visszavonás</button>",
+      "css": ".ds-undo { font-family: var(--font-allo, Allo), ui-sans-serif, system-ui, sans-serif; display: inline-flex; align-items: center; gap: 0.4rem; min-height: 44px; padding: 0 0.85rem; border: 0; border-radius: 9999px; background: transparent; color: var(--royal-ink, oklch(0.897 0.031 281.8)); box-shadow: inset 0 0 0 1.5px color-mix(in oklch, var(--royal-ink, oklch(0.897 0.031 281.8)) 26%, transparent); font-size: 0.82rem; font-weight: 650; font-variation-settings: 'ROND' 30; cursor: pointer; transition: background-color 200ms var(--out, cubic-bezier(0.16, 1, 0.3, 1)), color 200ms var(--out, cubic-bezier(0.16, 1, 0.3, 1)), scale 500ms var(--spring, cubic-bezier(0.34, 1.56, 0.64, 1)), font-variation-settings 500ms var(--spring, cubic-bezier(0.34, 1.56, 0.64, 1)); } .ds-undo svg { transition: rotate 500ms var(--spring, cubic-bezier(0.34, 1.56, 0.64, 1)); } .ds-undo:hover { background: color-mix(in oklch, var(--royal-ink, oklch(0.897 0.031 281.8)) 10%, transparent); font-variation-settings: 'ROND' 100; } .ds-undo:hover svg { rotate: -30deg; } .ds-undo:active { scale: 0.92 0.86; } .ds-undo:focus-visible { outline: 2px solid var(--nitro, oklch(0.9 0.21 124)); outline-offset: 3px; }"
+    },
+    {
+      "name": "Glass Nav",
+      "kind": "nav",
+      "refersTo": "nav",
+      "description": "Fixed glass pill: wordmark, centered links with a scaling ink underline, compact pill.",
+      "html": "<nav class=\"ds-nav\"><a class=\"ds-nav-mark\" href=\"#\"><span class=\"ds-nav-tile\"><svg width=\"1em\" height=\"1em\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m18 16 4-4-4-4\"/><path d=\"m6 8-4 4 4 4\"/><path d=\"m14.5 4-5 16\"/></svg></span>MeetCoder</a><ul class=\"ds-nav-links\"><li><a href=\"#\">Hogyan működik</a></li><li><a href=\"#\">Megbízhatóság</a></li><li><a href=\"#\">Modellek</a></li></ul><a class=\"ds-nav-pill\" href=\"#\">Letöltés<span class=\"ds-nav-chip\"><svg width=\"18\" height=\"18\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.25\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M12 5v14\"/><path d=\"m19 12-7 7-7-7\"/></svg></span></a></nav>",
+      "css": ".ds-nav { font-family: var(--font-allo, Allo), ui-sans-serif, system-ui, sans-serif; display: flex; align-items: center; gap: 1rem; height: 4rem; padding: 0 0.625rem 0 1.25rem; border-radius: 9999px; color: var(--royal-ink, oklch(0.897 0.031 281.8)); background: color-mix(in oklch, var(--royal, oklch(0.288 0.144 272.8)) 60%, transparent); border: 1px solid color-mix(in oklch, var(--royal-ink, oklch(0.897 0.031 281.8)) 14%, transparent); backdrop-filter: blur(24px) saturate(170%); box-shadow: inset 0 1px 0 oklch(1 0 0 / 22%), 0 20px 50px -30px oklch(0.12 0.06 275 / 80%); } .ds-nav a { color: inherit; text-decoration: none; } .ds-nav-mark { display: inline-flex; align-items: center; gap: 0.6rem; font-size: 1.3rem; font-weight: 800; letter-spacing: -0.035em; } .ds-nav-tile { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 0.55rem; background: var(--royal, oklch(0.288 0.144 272.8)); color: var(--royal-ink, oklch(0.897 0.031 281.8)); font-size: 1.15rem; transition: rotate 600ms var(--spring, cubic-bezier(0.34, 1.56, 0.64, 1)); } .ds-nav-mark:hover .ds-nav-tile { rotate: -12deg; } .ds-nav-links { display: flex; gap: 0.25rem; margin: 0 auto; padding: 0; list-style: none; } .ds-nav-links a { position: relative; display: inline-flex; align-items: center; min-height: 44px; padding: 0 0.9rem; color: var(--royal-ink-soft, oklch(0.795 0.065 280.9)); font-size: 0.95rem; font-weight: 600; transition: color 200ms var(--out, cubic-bezier(0.16, 1, 0.3, 1)); } .ds-nav-links a::after { content: ''; position: absolute; left: 0.9rem; right: 0.9rem; bottom: 0.55rem; height: 2px; border-radius: 2px; background: var(--royal-ink, oklch(0.897 0.031 281.8)); scale: 0 1; transform-origin: left; transition: scale 500ms var(--out, cubic-bezier(0.16, 1, 0.3, 1)); } .ds-nav-links a:hover { color: var(--royal-ink, oklch(0.897 0.031 281.8)); } .ds-nav-links a:hover::after { scale: 1 1; } .ds-nav a:focus-visible { outline: 2px solid var(--nitro, oklch(0.9 0.21 124)); outline-offset: 3px; border-radius: 6px; } .ds-nav-pill { display: inline-flex; align-items: center; gap: 0.6rem; height: 2.75rem; padding: 0 0.25rem 0 1.1rem; border-radius: 9999px; font-size: 0.95rem; font-weight: 700; font-variation-settings: 'ROND' 30; border: 1px solid color-mix(in oklch, var(--royal-ink, oklch(0.897 0.031 281.8)) 34%, transparent); background: color-mix(in oklch, var(--royal, oklch(0.288 0.144 272.8)) 46%, transparent); } .ds-nav-chip { display: grid; place-items: center; width: 2.25rem; height: 2.25rem; border-radius: 9999px; background: var(--nitro, oklch(0.9 0.21 124)); color: var(--nitro-ink, oklch(0.24 0.055 132)); }"
+    },
+    {
+      "name": "Ezt használod Chip",
+      "kind": "chip",
+      "refersTo": "yours-chip",
+      "description": "Lime chip on the visitor's own platform only; pops in on the spring.",
+      "html": "<span class=\"ds-yours\"><svg width=\"15\" height=\"15\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M20 6 9 17l-5-5\"/></svg>Ezt használod</span>",
+      "css": ".ds-yours { font-family: var(--font-allo, Allo), ui-sans-serif, system-ui, sans-serif; display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.8rem; border-radius: 9999px; background: var(--nitro, oklch(0.9 0.21 124)); color: var(--nitro-ink, oklch(0.24 0.055 132)); font-size: 0.85rem; font-weight: 700; animation: ds-pop 700ms var(--spring, cubic-bezier(0.34, 1.56, 0.64, 1)) both; } @keyframes ds-pop { from { opacity: 0; scale: 0.6; } }"
+    },
+    {
+      "name": "Példa Tag",
+      "kind": "chip",
+      "refersTo": "pill",
+      "description": "Ink-ringed tag marking demo data.",
+      "html": "<span class=\"ds-tag\">Példa</span>",
+      "css": ".ds-tag { font-family: var(--font-allo, Allo), ui-sans-serif, system-ui, sans-serif; display: inline-block; padding: 0.2rem 0.65rem; border-radius: 9999px; box-shadow: inset 0 0 0 1.5px color-mix(in oklch, var(--royal-ink, oklch(0.897 0.031 281.8)) 34%, transparent); color: var(--royal-ink-soft, oklch(0.795 0.065 280.9)); font-size: 0.78rem; font-weight: 650; }"
+    },
+    {
+      "name": "Glass Panel with Spec Rows",
+      "kind": "card",
+      "refersTo": "glass-panel",
+      "description": "Royal tinted glass over drift, holding hairline spec rows instead of feature cards.",
+      "html": "<div class=\"ds-glass\"><h3 class=\"ds-glass-title\">Röviden</h3><dl class=\"ds-spec\"><div><dt>Bemenet</dt><dd>A tanár megosztott képernyője, hang nélkül</dd></div><div><dt>Modellhez</dt><dd>Csak a változott képkockák jutnak el</dd></div><div><dt>Nyelv</dt><dd>Magyar felület, magyar jegyzetek</dd></div></dl></div>",
+      "css": ".ds-glass { font-family: var(--font-allo, Allo), ui-sans-serif, system-ui, sans-serif; padding: clamp(1.75rem, 3vw, 3rem); border-radius: 2.5rem; color: var(--royal-ink, oklch(0.897 0.031 281.8)); background: linear-gradient(155deg, color-mix(in oklch, var(--royal-lift, oklch(0.409 0.197 271.4)) 58%, transparent), color-mix(in oklch, var(--royal, oklch(0.288 0.144 272.8)) 74%, transparent) 62%); border: 1px solid color-mix(in oklch, var(--royal-ink, oklch(0.897 0.031 281.8)) 16%, transparent); box-shadow: inset 0 1px 0 oklch(1 0 0 / 20%), 0 48px 96px -44px oklch(0.12 0.06 275 / 80%); backdrop-filter: blur(28px) saturate(150%); } .ds-glass-title { margin: 0 0 1.25rem; font-size: 1.6rem; font-weight: 850; line-height: 1.1; letter-spacing: -0.02em; } .ds-spec { display: grid; grid-template-columns: max-content minmax(0, 1fr); margin: 0; } .ds-spec > div { display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; gap: 2rem; padding: 0.8rem 0; border-top: 1px solid color-mix(in oklch, var(--royal-ink, oklch(0.897 0.031 281.8)) 16%, transparent); } .ds-spec > div:first-child { border-top: 0; padding-top: 0; } .ds-spec dt { font-weight: 700; } .ds-spec dd { margin: 0; color: var(--royal-ink-soft, oklch(0.795 0.065 280.9)); }"
+    },
+    {
+      "name": "Headline Sticker",
+      "kind": "custom",
+      "refersTo": "sticker-lime",
+      "description": "Lime sticker set inline in the kinetic headline; bobs, grows on hover.",
+      "html": "<h1 class=\"ds-kinetic\">A kód <span class=\"ds-sticker\"><svg width=\"1em\" height=\"1em\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"m18 16 4-4-4-4\"/><path d=\"m6 8-4 4 4 4\"/><path d=\"m14.5 4-5 16\"/></svg></span></h1>",
+      "css": ".ds-kinetic { font-family: var(--font-allo, Allo), ui-sans-serif, system-ui, sans-serif; display: flex; align-items: center; gap: 0.2em; margin: 0; color: var(--royal-ink, oklch(0.897 0.031 281.8)); font-size: 4.5rem; font-weight: 640; line-height: 0.92; letter-spacing: -0.04em; font-variation-settings: 'ROND' 10, 'opsz' 32; transition: font-variation-settings 600ms var(--spring, cubic-bezier(0.34, 1.56, 0.64, 1)); } .ds-kinetic:hover { font-variation-settings: 'wght' 900, 'ROND' 100, 'opsz' 32; } .ds-sticker { display: inline-grid; place-items: center; width: 0.82em; height: 0.82em; border-radius: 0.24em; background: var(--nitro, oklch(0.9 0.21 124)); color: var(--nitro-ink, oklch(0.24 0.055 132)); font-size: 1em; cursor: pointer; transition: scale 600ms var(--spring, cubic-bezier(0.34, 1.56, 0.64, 1)); animation: ds-bob 4.2s ease-in-out infinite alternate; } .ds-sticker svg { width: 0.5em; height: 0.5em; } .ds-sticker:hover { scale: 1.12; } @keyframes ds-bob { from { rotate: -5deg; } to { rotate: 5deg; } }"
+    },
+    {
+      "name": "Code Well",
+      "kind": "custom",
+      "refersTo": "code-well",
+      "description": "The only sunken region: Royal Night well for commands and shells.",
+      "html": "<pre class=\"ds-well\">git clone …/meet-coder\ncd meet-coder/windows\nnpm install</pre>",
+      "css": ".ds-well { margin: 0; padding: 1rem 1.15rem; border-radius: 1.1rem; background: var(--royal-night, oklch(0.16 0.069 275.2)); color: var(--royal-ink, oklch(0.897 0.031 281.8)); font-family: ui-monospace, 'SF Mono', 'Cascadia Code', Menlo, Consolas, monospace; font-size: 0.88rem; line-height: 1.7; overflow-x: auto; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Class Behind Glass",
+    "overview": "**Creative North Star: \"The Class Behind Glass\"**\n\nThe site is a night-time Royal room where the words of a programming class (KÓD, JEGYZET, PROJEKT, VÁLTOZÁS) drift past at poster scale, and you read about MeetCoder through tinted glass laid over them. One kinetic Allo headline opens each page: letters land on a spring, swell in weight and roundness under the pointer, and carry small stickers set into the line like part of the word. Below it the page moves in fields that rise like the next swatch in a sample book: Royal glass, one Acid Lime field, a deep Royal field, then the night footer sheet.\n\nDensity is calm and editorial: few panels, generous gutters, spec rows instead of feature cards. Acid Lime is the counter hue and it means *you*: your download, your project, your platform, your focus. Roundness is meaning as well: Allo's ROND axis stays sharp while something is in progress and goes fully round when it resolves or when you touch it.\n\nThis file covers the website (`site/`) only. The native macOS and Windows app has its own system and is out of scope here.",
+    "keyCharacteristics": [
+      "Royal Night ground, Royal tinted glass, Acid Lime as the counter hue.",
+      "One kinetic display line per page, with lime and ink stickers inline.",
+      "Giant drifting class words behind the glass, never in front of it.",
+      "ROND as meaning: sharp at work, round when resolved or touched.",
+      "One overshoot spring for everything that lands or responds.",
+      "Spec rows and hairlines instead of cards; pills for every action."
+    ],
+    "rules": [
+      {
+        "name": "The Lime Is You Rule",
+        "body": "On Royal ground, Acid Lime marks the visitor and their own things only: the headline sticker, the arrow chip inside every pill, focus and selection, the \"A te projekted\" pane and its new files and lines, and the \"Ezt használod\" OS chip. If an element is about the teacher, the class or the product, it is not lime.",
+        "section": "colors"
+      },
+      {
+        "name": "The Hue Swap Rule",
+        "body": "Each field sets `--tint`, `--ink`, `--ring` and `--counter-ink` together (`hue-royal`, `hue-nitro`). Inside the lime field the ring and counter flip to Royal. Never set one of those without the others.",
+        "section": "colors"
+      },
+      {
+        "name": "The Hairline From Ink Rule",
+        "body": "Borders and dividers are the local ink at low opacity, so they follow the field they sit in.",
+        "section": "colors"
+      },
+      {
+        "name": "The ROND Means Done Rule",
+        "body": "Sharp (ROND 0 to 10) while something is working, fully round (ROND 100) when it resolves or answers a touch. The live-class headline rounds when the class finishes, pills and the undo button round on hover, and display letters round under the pointer.",
+        "section": "typography"
+      },
+      {
+        "name": "The One Kinetic Line Rule",
+        "body": "Each page gets one kinetic display headline, split into per-letter spans for the axis effect, and it always keeps a screen-reader label with the plain sentence.",
+        "section": "typography"
+      },
+      {
+        "name": "The No Drift On Phones Rule",
+        "body": "At 560px and below nothing drifts, and the world panels render as solid Royal gradients with no `backdrop-filter`. Too little shows through glass at that width to justify it.",
+        "section": "layout"
+      },
+      {
+        "name": "The Glass Only Over Motion Rule",
+        "body": "Glass (`backdrop-filter`) is used only where something moves behind it: drift, page content under the nav, a field under a pill. Where nothing moves behind a panel, it is solid.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Transform-Only Glass Rule",
+        "body": "Glass panels enter with scale and translate only. Opacity or filter on a glass element, or on an ancestor of one, cuts it off from what it frosts.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Flat Inside Rule",
+        "body": "Inside a glass panel, regions are flat and divided by hairlines. Only code wells (the teacher screen, your local file, commands, shells) are sunken, filled with Royal Night or Royal at 50%.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** keep lime on Royal limited to the visitor: stickers, pill arrow chips, focus and selection, \"A te projekted\", \"Ezt használod\".",
+      "**Do** switch a field with `hue-royal` or `hue-nitro` so tint, ink, ring and counter-ink change together.",
+      "**Do** use spec rows and hairlines (local ink at 16%) where another system would use a row of cards.",
+      "**Do** animate glass with `scale` and `translate` only, and give every glass panel a solid fallback (phones at 560px and below, reduced transparency).",
+      "**Do** use the spring for anything that lands, lifts or rounds, and Out for color and fades.",
+      "**Do** carry state on the ROND axis: sharp while working, round when resolved or touched.",
+      "**Do** label demo data with the Példa tag."
+    ],
+    "donts": [
+      "**Don't** animate opacity or filter on a glass panel or any ancestor of one; it breaks `backdrop-filter`.",
+      "**Don't** use glass where nothing moves behind it; use the solid panel.",
+      "**Don't** raise or shadow regions inside a glass panel; only code wells sink.",
+      "**Don't** run the drift on phones (560px and below), or put drift in front of content.",
+      "**Don't** use lime for the teacher, the class or the product on Royal ground.",
+      "**Don't** set more than one kinetic display line per page, or more than one lime field per page.",
+      "**Don't** use a second typeface for display or UI; monospace is for code, paths and commands only."
+    ]
+  }
+}
