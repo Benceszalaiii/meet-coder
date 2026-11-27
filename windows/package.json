@@ -1,0 +1,80 @@
+{
+  "name": "meetcoder",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MeetCoder",
+  "main": "src/main/main.js",
+  "scripts": {
+    "prepare": "node scripts/prepare-assets.js && node scripts/build-ui.js",
+    "start": "npm run prepare && electron .",
+    "dist": "npm run prepare && electron-builder --win --x64"
+  },
+  "devDependencies": {
+    "electron": "^45.5.0",
+    "electron-builder": "^26.18.0",
+    "esbuild": "^0.28.2",
+    "lucide-static": "^1.80.0",
+    "preact": "^11.2.0"
+  },
+  "dependencies": {
+    "@tesseract.js-data/eng": "^1.0.0",
+    "@tesseract.js-data/hun": "^1.0.0",
+    "cross-spawn": "^7.0.6",
+    "tesseract.js": "^7.0.0"
+  },
+  "build": {
+    "appId": "local.meetcoder.app",
+    "productName": "MeetCoder",
+    "asar": false,
+    "npmRebuild": false,
+    "forceCodeSigning": false,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "src/main/**",
+      "src/preload.js",
+      "dist/**",
+      "build/icon.png",
+      "package.json",
+      "node_modules/**/*",
+      "!node_modules/.cache",
+      "!node_modules/electron/**",
+      "!node_modules/electron-builder/**",
+      "!node_modules/esbuild/**",
+      "!node_modules/@esbuild/**",
+      "!node_modules/lucide-static/**",
+      "!node_modules/preact/**",
+      "!node_modules/@tesseract.js-data/**"
+    ],
+    "extraResources": [
+      {
+        "from": "tessdata",
+        "to": "tessdata"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "artifactName": "MeetCoder-${version}-${arch}.${ext}"
+  },
+  "author": "MeetCoder"
+}
