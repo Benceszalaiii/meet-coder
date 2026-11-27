@@ -565,6 +565,8 @@ pre {
   cursor: default;
   user-select: none;
   margin-block: auto;
+  /* Pointer-driven weight changes reflow the headline; keep that reflow inside it. */
+  contain: layout style;
 }
 
 .k-line {
@@ -670,7 +672,6 @@ pre {
   z-index: -1;
   pointer-events: none;
   mask-image: linear-gradient(to bottom, transparent, #000 18rem, #000 calc(100% - 12rem), transparent);
-  /* The breathing letters re-lay out every frame; keep that work inside this box. */
   contain: strict;
 }
 
@@ -690,10 +691,15 @@ pre {
   white-space: nowrap;
 }
 
+/* Each track is rastered once into its own layer and only translated, so the drift costs the
+   compositor a move per frame instead of reshaping and re-rasterising every glyph. The letters
+   alternate between the two ends of the old breathing range to keep its heavy/light rhythm. */
 .drift-track {
   display: flex;
   gap: 0.06em;
   width: max-content;
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .drift-track span {
@@ -704,6 +710,7 @@ pre {
 
 .drift-track span:nth-child(even) {
   color: color-mix(in oklch, var(--royal-glow) 70%, transparent);
+  font-variation-settings: "wght" 540, "ROND" 0, "opsz" 32;
 }
 
 .world-panels {
@@ -789,10 +796,20 @@ pre {
 }
 
 .demo-dot {
+  position: relative;
   width: 0.6rem;
   height: 0.6rem;
   border-radius: 50%;
   background: color-mix(in oklch, var(--ink) 40%, transparent);
+}
+
+.demo-dot::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--royal-ink);
+  opacity: 0;
 }
 
 .demo-live[data-on] .demo-dot {
@@ -1728,15 +1745,7 @@ pre {
     animation-direction: reverse;
   }
 
-  .drift-track span {
-    animation: breathe 5.5s var(--out) infinite alternate;
-  }
-
-  .drift-track span:nth-child(even) {
-    animation-delay: -2.7s;
-  }
-
-  .demo-live[data-on] .demo-dot {
+  .demo-live[data-on] .demo-dot::after {
     animation: pulse 1.4s var(--out) infinite;
   }
 
@@ -1810,21 +1819,14 @@ pre {
   }
 }
 
-@keyframes breathe {
+@keyframes pulse {
   from {
-    font-variation-settings: "wght" 520, "ROND" 0, "opsz" 32;
+    opacity: 0.6;
+    scale: 1;
   }
   to {
-    font-variation-settings: "wght" 900, "ROND" 100, "opsz" 32;
-  }
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 color-mix(in oklch, var(--royal-ink) 60%, transparent);
-  }
-  100% {
-    box-shadow: 0 0 0 0.6rem transparent;
+    opacity: 0;
+    scale: 3;
   }
 }
 
